@@ -1,5 +1,7 @@
 ﻿using PRIExplorer.ViewModels;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace PRIExplorer
 {
@@ -17,7 +19,32 @@ namespace PRIExplorer
             viewModel = new MainViewModel();
 
             DataContext = viewModel;
+
+            var args = System.Environment.GetCommandLineArgs();
+            if (args.Length >= 2)
+            {
+                viewModel.OpenPriFile(args[1]);
+                Task.Delay(1).GetAwaiter().OnCompleted(() =>
+                {
+                    if (resourceMapTreeView.Items.Count != 0)
+                    {
+                        var first = resourceMapTreeView.Items[0];
+
+
+                        TreeViewItem tvItem = (TreeViewItem)resourceMapTreeView
+                                                  .ItemContainerGenerator
+                                                  .ContainerFromItem(first);
+                        tvItem.Focus();
+
+
+                    }
+                });
+                
+            }
+            
         }
+
+        
 
         private void resourceMapTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
@@ -46,5 +73,7 @@ namespace PRIExplorer
 
             e.Handled = true;
         }
+
+        
     }
 }
